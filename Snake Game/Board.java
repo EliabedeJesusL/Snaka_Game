@@ -23,7 +23,6 @@ public class Board extends JPanel implements ActionListener, KeyListener {
     public Board(int boardWidth, int boardHeight) {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
-        this.gameOver = false;
         this.food = new Food(boardWidth / tileSize, boardHeight / tileSize , tileSize, Color.RED, boardWidth, boardHeight);
         this.snake = new Snake(0, 0, tileSize, Color.GREEN);
          
@@ -33,9 +32,15 @@ public class Board extends JPanel implements ActionListener, KeyListener {
         setFocusable(true);
         
         this.timer = new Timer(100, this);
-        timer.start();
+        startGame();
+    }
 
+    public void startGame(){
+        this.snake = new Snake(0, 0, tileSize, Color.GREEN);
+
+        timer.start();
         food.placeFood();
+        this.gameOver = false;
     }
 
     @Override
@@ -75,7 +80,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
     }
 
     public void drawScore(Graphics g){
-        int score = snake.getSize();
+        int score = snake.getSize() - 1;
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -123,6 +128,18 @@ public class Board extends JPanel implements ActionListener, KeyListener {
         } else if (key == KeyEvent.VK_RIGHT && snake.getVelocityX() == 0) {
             snake.setVelocityX(1);
             snake.setVelocityY(0);
+        } else if (key == KeyEvent.VK_SPACE) {
+            if (gameOver) {
+                timer.start();
+                gameOver = false;
+            } else {
+                timer.stop();
+                gameOver = true;
+            }
+        } else if (key == KeyEvent.VK_ESCAPE) {
+            if (gameOver) {
+                startGame();
+            }
         }
     }
     
